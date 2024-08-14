@@ -2,7 +2,7 @@ import re
 from typing import List, Optional, Tuple
 
 import torch
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, AutoModelForSequenceClassification
 
 from auto_fp8.config import BaseQuantizeConfig
 from auto_fp8.quantize import (
@@ -15,7 +15,8 @@ from auto_fp8.quantize import (
 class AutoFP8ForCausalLM:
     def __init__(
         self,
-        model: AutoModelForCausalLM,
+        #model: AutoModelForCausalLM,
+        model: AutoModelForSequenceClassification,
         quantize_config: BaseQuantizeConfig,
     ):
         self.model = model
@@ -89,7 +90,8 @@ class AutoFP8ForCausalLM:
 
         merged_kwargs = {**model_init_kwargs, **cached_file_kwargs}
         print("Loading model with the following kwargs:", merged_kwargs)
-        model = AutoModelForCausalLM.from_pretrained(
+        #model = AutoModelForCausalLM.from_pretrained(
+        model = AutoModelForSequenceClassification.from_pretrained(
             pretrained_model_name_or_path, **merged_kwargs
         )
 
@@ -118,9 +120,11 @@ class AutoFP8ForCausalLM:
             ), "Calibration tokens required for activation quantization"
 
 
+            #def _prepare_calibration_data(calibration_tokens):
+            #    if hasattr(calibration_tokens, "input_ids"):
+            #        return calibration_tokens.input_ids
+            #    return calibration_tokens
             def _prepare_calibration_data(calibration_tokens):
-                if hasattr(calibration_tokens, "input_ids"):
-                    return calibration_tokens.input_ids
                 return calibration_tokens
 
             quantize_activations(

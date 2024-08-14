@@ -273,9 +273,13 @@ def quantize_activations(
 
     # Pass through calibration data to measure activation scales
     with torch.inference_mode():
-        with tqdm.tqdm(total=calibration_tokens.shape[0], desc="Calibrating activation scales") as pbar:
-            for row_idx in range(calibration_tokens.shape[0]):
-                model(calibration_tokens[row_idx].reshape(1, -1))
+        #with tqdm.tqdm(total=calibration_tokens.shape[0], desc="Calibrating activation scales") as pbar:
+        #    for row_idx in range(calibration_tokens.shape[0]):
+        #        model(calibration_tokens[row_idx].reshape(1, -1))
+        #        cleanup_memory()
+        #        pbar.update(1)
+        with tqdm.tqdm(total=1, desc="Calibrating activation scales") as pbar:
+                model(**calibration_tokens)
                 cleanup_memory()
                 pbar.update(1)
 
